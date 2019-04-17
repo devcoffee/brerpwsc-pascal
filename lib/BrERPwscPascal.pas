@@ -75,7 +75,7 @@ type
     FModelCRUD: ModelCRUD;
     FADLoginRequest: ADLoginRequest2;
   public
-    constructor Create;
+    constructor Create; reintroduce; overload;
     destructor Destroy; override;
   published
     property ModelCRUD:      ModelCRUD        read FModelCRUD write FModelCRUD;
@@ -669,6 +669,7 @@ function GetModelADService(UseWSDL: Boolean; Addr: string; HTTPRIO: THTTPRIO): M
 const
   defWSDL = 'http://teste.brerp.com.br/ADInterface/services/ModelADService?wsdl';
   defURL  = 'http://teste.brerp.com.br/ADInterface/services/ModelADService';
+  defAdd  = '/ADInterface/services/ModelADService?wsdl';
   defSvc  = 'ModelADService';
   defPrt  = 'ModelADServiceImplPort';
 var
@@ -676,12 +677,13 @@ var
 begin
   Result := nil;
   if (Addr = '') then
-  begin
-    if UseWSDL then
-      Addr := defWSDL
-    else
-      Addr := defURL;
-  end;
+    begin
+      if UseWSDL then
+        Addr := defWSDL
+      else
+        Addr := defURL;
+    end else
+      Addr := Addr + defAdd;
   if HTTPRIO = nil then
     RIO := THTTPRIO.Create(nil)
   else
@@ -689,11 +691,11 @@ begin
   try
     Result := (RIO as ModelADService);
     if UseWSDL then
-    begin
-      RIO.WSDLLocation := Addr;
-      RIO.Service := defSvc;
-      RIO.Port := defPrt;
-    end else
+      begin
+        RIO.WSDLLocation := Addr;
+        RIO.Service := defSvc;
+        RIO.Port := defPrt;
+      end else
       RIO.URL := Addr;
   finally
     if (Result = nil) and (HTTPRIO = nil) then
@@ -704,9 +706,9 @@ end;
 
 constructor ModelCRUDRequest2.Create;
 begin
-  inherited;
-  ADLoginRequest := ADLoginRequest.Create;
-  ModelCRUD := ModelCRUD.Create;
+  //inherited;
+  FADLoginRequest.Create;
+  FModelCRUD.Create;
 end;
 
 destructor ModelCRUDRequest2.Destroy;
