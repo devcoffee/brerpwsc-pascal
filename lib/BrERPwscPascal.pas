@@ -75,6 +75,7 @@ type
     FModelCRUD: ModelCRUD;
     FADLoginRequest: ADLoginRequest2;
   public
+    constructor Create;
     destructor Destroy; override;
   published
     property ModelCRUD:      ModelCRUD        read FModelCRUD write FModelCRUD;
@@ -700,6 +701,13 @@ begin
   end;
 end;
 
+
+constructor ModelCRUDRequest2.Create;
+begin
+  inherited;
+  ADLoginRequest := ADLoginRequest.Create;
+  ModelCRUD := ModelCRUD.Create;
+end;
 
 destructor ModelCRUDRequest2.Destroy;
 begin
