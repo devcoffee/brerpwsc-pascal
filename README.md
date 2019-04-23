@@ -1,2 +1,2 @@
 # brerpwsc-pascal
-Biblioteca em Pascal para facilitar as requisições SOAP no BrERP
+Biblioteca em Pascal/Delphi para facilitar as requisições SOAP no BrERP
