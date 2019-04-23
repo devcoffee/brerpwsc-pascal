@@ -19,24 +19,31 @@ object Form1: TForm1
   TextHeight = 13
   object LabelBPName: TLabel
     Left = 58
-    Top = 135
+    Top = 47
     Width = 72
     Height = 13
     Caption = 'BPartner Name'
   end
   object LabelBPValue: TLabel
     Left = 58
-    Top = 171
+    Top = 83
     Width = 71
     Height = 13
     Caption = 'BPartner Value'
   end
   object LabelBPTaxID: TLabel
     Left = 58
-    Top = 206
+    Top = 118
     Width = 77
     Height = 13
     Caption = 'BPartner Tax ID'
+  end
+  object LabelResponse: TLabel
+    Left = 58
+    Top = 188
+    Width = 51
+    Height = 13
+    Caption = 'Response:'
   end
   object Image1: TImage
     Left = 58
@@ -171,28 +178,31 @@ object Form1: TForm1
   end
   object EditBPName: TEdit
     Left = 58
-    Top = 148
+    Top = 60
     Width = 300
     Height = 21
     TabOrder = 1
+    Text = 'Test BPartner'
   end
   object EditBPValue: TEdit
     Left = 58
-    Top = 184
+    Top = 96
     Width = 300
     Height = 21
     TabOrder = 2
+    Text = '1222333'
   end
   object EditBPTaxID: TEdit
     Left = 58
-    Top = 219
+    Top = 131
     Width = 300
     Height = 21
     TabOrder = 3
+    Text = '1222333'
   end
   object BtnSendRequest: TButton
     Left = 205
-    Top = 259
+    Top = 171
     Width = 153
     Height = 25
     Caption = 'Send Request'
@@ -738,7 +748,7 @@ object Form1: TForm1
       Alignment = taCenter
       PasswordChar = '*'
       TabOrder = 1
-      Text = 'cafe123'
+      Text = 'irm_brerp'
     end
     object EditClientID: TEdit
       Left = 46
@@ -819,8 +829,15 @@ object Form1: TForm1
       Height = 19
       Alignment = taCenter
       TabOrder = 10
-      Text = 'http://teste.brerp.com.br'
+      Text = 'http://dev13.devcoffee.com.br'
     end
+  end
+  object MemoResponse: TMemo
+    Left = 58
+    Top = 202
+    Width = 300
+    Height = 124
+    TabOrder = 5
   end
   object HTTPRIO1: THTTPRIO
     OnAfterExecute = HTTPRIO1AfterExecute

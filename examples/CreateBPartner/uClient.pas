@@ -40,8 +40,10 @@ type
     LabelBPValue: TLabel;
     LabelBPTaxID: TLabel;
     BtnSendRequest: TButton;
-    Image1: TImage;
     EditURL: TEdit;
+    LabelResponse: TLabel;
+    MemoResponse: TMemo;
+    Image1: TImage;
     procedure ImageMenuClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SetLogin();
@@ -104,9 +106,11 @@ end;
 procedure TForm1.BtnSendRequestClick(Sender: TObject);
 var
   arg0 : ModelCRUDRequest;
-  tabData : WindowTabData;
-  data : DataField;
+  response : StandardResponse;
+  data0, data1, data2 : DataField;
   dataRow : BrERPwscPascal.DataRow;
+  I: Integer;
+  output : outputFields;
 begin
   arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
@@ -117,18 +121,20 @@ begin
 
   SetLength(dataRow,3);
   // Set sending Data
-  data := DataField.Create;
-  data.column := 'Name';
-  data.val    := EditBPName.Text;
-  DataRow[0]  := data;
+  data0        := DataField.Create;
+  data0.column := 'Name';
+  data0.val    := EditBPName.Text;
+  DataRow[0]   := data0;
 
-  data.column := 'Value';
-  data.val    := EditBPValue.Text;
-  DataRow[1]  := data;
+  data1        := DataField.Create;
+  data1.column := 'Value';
+  data1.val    := EditBPValue.Text;
+  DataRow[1]   := data1;
 
-  data.column := 'TaxID';
-  data.val    := EditBPTaxID.Text;
-  DataRow[2]  := data;
+  data2        := DataField.Create;
+  data2.column := 'TaxID';
+  data2.val    := EditBPTaxID.Text;
+  DataRow[2]   := data2;
   // Set Array of sending Data
   arg0.ModelCRUD.DataRow := dataRow;
 
@@ -137,36 +143,38 @@ begin
       GetModelADService(UseWSDL, URL, HTTPRio).CallMethod
           e.g. URL: 'http://teste.brerp.com.br'
 
-    CallMethod can be
-      createUpdateData(ModelCRUDRequest)
-      setDocAction(ModelSetDocActionRequest)
-      createData(ModelCRUDRequest)
-      deleteData(ModelCRUDRequest)
-      readData(ModelCRUDRequest)
-      getList(ModelGetListRequest)
-      runProcess(ModelRunProcessRequest)
-      updateData(ModelCRUDRequest)
-      queryData(ModelCRUDRequest)
-
-    Return will be a WindowTabData
+      CallMethod         Parameter                  Result
+      -----------------|---------------------------|-------------------
+      createUpdateData  (ModelCRUDRequest)	        StandardResponse
+      setDocAction      (ModelSetDocActionRequest)	StandardResponse
+      createData        (ModelCRUDRequest)	        StandardResponse
+      deleteData        (ModelCRUDRequest)	        StandardResponse
+      readData          (ModelCRUDRequest)	        WindowTabData
+      getList           (ModelGetListRequest)	      WindowTabData
+      runProcess        (ModelRunProcessRequest)	  RunProcessResponse
+      updateData        (ModelCRUDRequest)	        StandardResponse
+      queryData         (ModelCRUDRequest)	        WindowTabData
   }
-  tabData := GetModelADService(true, EditURL.Text, HTTPRIO1).readData(arg0);
+  response := GetModelADService(true, EditURL.Text, HTTPRIO1).createData(arg0);
 
-  ShowMessage(tabData.NumRows.ToString);
-  ShowMessage(tabData.TotalRows.ToString);
-  ShowMessage(tabData.StartRow.ToString);
-  ShowMessage(tabData.RowCount.ToString);
-  ShowMessage(tabData.Success.ToString);
-  ShowMessage(tabData.Error);
-  ShowMessage(tabData.ErrorInfo);
-  ShowMessage(tabData.Status);
+  MemoResponse.Clear;
+  if (response.IsError) then
+    MemoResponse.Lines.Add('Error: ' + response.Error)
+  else
+    for I := Low(response.outputFields) to High(response.outputFields) do begin
+      output := response.outputFields[I];
+      MemoResponse.Lines.Add('Column: ' + output[I].column);
+      MemoResponse.Lines.Add('Value: '  + output[I].value );
+      MemoResponse.Lines.Add('Text: '   + output[I].Text  );
+      MemoResponse.Lines.Add('---------------------------');
+    end;
 
 end;
 
 //=== Form Create ==============================================================
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  ADLogin := ADLoginRequest.Create;
+  ADLogin := ADLoginRequest.Create();
   SetLogin;
 end;
 
@@ -182,8 +190,10 @@ begin
   Document.Options := [];
   Document.LoadFromStream(SOAPResponse);
   Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text);
-  Document.SaveToFile(ExtractFilePath(Application.ExeName) + '/../../../' +
-        'documents/' + Application.ExeName + 'Test_Response.xml');
+  Document.Active := true;
+
+  Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
+        Copy(ExtractFileName(Application.ExeName), 1, Pos('.',ExtractFileName(Application.ExeName)) -1) + 'Test_Response.xml'));
 
   SOAPResponse.Position := 0;
 end;
@@ -200,8 +210,10 @@ begin
   Document.Options := [];
   Document.LoadFromStream(SOAPRequest);
   Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text);
-  Document.SaveToFile(ExtractFilePath(Application.ExeName) + '/../../../' +
-        'documents/' + Application.ExeName + 'Test_Request.xml');
+  Document.Active := true;
+
+  Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
+        Copy(ExtractFileName(Application.ExeName), 1, Pos('.',ExtractFileName(Application.ExeName))-1) + 'Test_Request.xml'));
 
   SOAPRequest.Position := 0;
 end;
