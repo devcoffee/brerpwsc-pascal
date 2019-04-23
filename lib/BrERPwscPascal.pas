@@ -706,9 +706,9 @@ end;
 
 constructor ModelCRUDRequest2.Create;
 begin
-  //inherited;
-  FADLoginRequest.Create;
-  FModelCRUD.Create;
+  inherited Create;
+  FADLoginRequest := ADLoginRequest2.Create();
+  FModelCRUD := BrERPwscPascal.ModelCRUD.Create();
 end;
 
 destructor ModelCRUDRequest2.Destroy;
@@ -1266,12 +1266,12 @@ initialization
   InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'createUpdateData', 'return', '',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   { ModelADService.setDocAction }
-  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'setDocAction', 'arg0', 'ModelCRUDRequest',
+  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'setDocAction', 'arg0', 'ModelSetDocActionRequest',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'setDocAction', 'return', '',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   { ModelADService.createData }
-  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'createData', 'arg0', '',
+  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'createData', 'arg0', 'ModelCRUDRequest',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'createData', 'return', '',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
@@ -1286,12 +1286,12 @@ initialization
   InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'readData', 'return', '',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   { ModelADService.getList }
-  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'getList', 'arg0', 'ModelCRUDRequest',
+  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'getList', 'arg0', 'ModelGetListRequest',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'getList', 'return', '',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   { ModelADService.runProcess }
-  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'runProcess', 'arg0', 'ModelCRUDRequest',
+  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'runProcess', 'arg0', 'ModelRunProcessRequest',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'runProcess', 'return', '',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
