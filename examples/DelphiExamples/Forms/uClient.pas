@@ -4,21 +4,22 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ButtonGroup,
-  Vcl.ExtCtrls, Vcl.Imaging.pngimage, BrERPwscPascal, Soap.InvokeRegistry,
-  Soap.Rio, Soap.SOAPHTTPClient;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Soap.InvokeRegistry, Soap.Rio,
+  Soap.SOAPHTTPClient, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, BrERPwscPascal,
+  Vcl.ComCtrls;
 
 type
-  TForm1 = class(TForm)
-    EditUser: TEdit;
+  TClient = class(TForm)
+    LabelCreateBPName: TLabel;
+    LabelCreateBPValue: TLabel;
+    LabelCreateBPTaxID: TLabel;
+    LabelCreateBPResponse: TLabel;
+    ImageLogoDev: TImage;
+    EditCreateBPName: TEdit;
+    EditCreateBPValue: TEdit;
+    EditCreateBPTaxID: TEdit;
+    BtnCreateBP: TButton;
     PanelLogin: TPanel;
-    EditPass: TEdit;
-    EditClientID: TEdit;
-    EditRoleID: TEdit;
-    EditOrgID: TEdit;
-    EditStage: TEdit;
-    EditWarehouseID: TEdit;
-    EditLang: TEdit;
     LabelUser: TLabel;
     LabelLang: TLabel;
     LabelClientID: TLabel;
@@ -28,32 +29,33 @@ type
     LabelStage: TLabel;
     ImageLogoBrERP: TImage;
     ImageMenu: TImage;
+    ImageHRMenu1: TImage;
+    ImageHRMenu2: TImage;
+    EditUser: TEdit;
+    EditPass: TEdit;
+    EditClientID: TEdit;
+    EditRoleID: TEdit;
+    EditOrgID: TEdit;
+    EditStage: TEdit;
+    EditWarehouseID: TEdit;
+    EditLang: TEdit;
     BtnSave: TButton;
     BtnCancel: TButton;
-    ImageHRMenu1: TImage;
-    HTTPRIO1: THTTPRIO;
-    ImageHRMenu2: TImage;
-    EditBPName: TEdit;
-    EditBPValue: TEdit;
-    EditBPTaxID: TEdit;
-    LabelBPName: TLabel;
-    LabelBPValue: TLabel;
-    LabelBPTaxID: TLabel;
-    BtnSendRequest: TButton;
     EditURL: TEdit;
-    LabelResponse: TLabel;
-    MemoResponse: TMemo;
-    Image1: TImage;
-    procedure ImageMenuClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure SetLogin();
+    MemoCreateBPResponse: TMemo;
+    HTTPRIO1: THTTPRIO;
+    PageControl1: TPageControl;
+    TabCreateBP: TTabSheet;
+    procedure BtnCreateBPClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
+    procedure SetLogin();
     procedure BtnCancelClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure HTTPRIO1AfterExecute(const MethodName: string;
       SOAPResponse: TStream);
     procedure HTTPRIO1BeforeExecute(const MethodName: string;
       SOAPRequest: TStream);
-    procedure BtnSendRequestClick(Sender: TObject);
+    procedure ImageMenuClick(Sender: TObject);
   private
     { Private declarations }
     ADLogin : ADLoginRequest;
@@ -62,7 +64,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  Client: TClient;
 
 implementation
 
@@ -70,40 +72,8 @@ implementation
 
 uses XMLIntf, XMLDoc;
 
-//=== Set Login (ADLogin) ======================================================
-procedure TForm1.SetLogin();
-begin
-  ADLogin.user        := EditUser.text;
-  ADLogin.pass        := EditPass.text;
-  ADLogin.lang        := EditLang.text;
-  ADLogin.ClientID    := StrToInt(EditClientID.text);
-  ADLogin.RoleID      := StrToInt(EditRoleID.text);
-  ADLogin.OrgID       := StrToInt(EditOrgID.text);
-  ADLogin.WarehouseID := StrToInt(EditWarehouseID.text);
-  ADLogin.stage       := StrToInt(EditStage.text);
-end;
-
-//=== Cancel Button ============================================================
-procedure TForm1.BtnCancelClick(Sender: TObject);
-begin
-  EditUser.text        := ADLogin.user;
-  EditPass.text        := ADLogin.pass;
-  EditLang.text        := ADLogin.lang;
-  EditClientID.text    := IntToStr(ADLogin.ClientID);
-  EditRoleID.text      := IntToStr(ADLogin.RoleID);
-  EditOrgID.text       := IntToStr(ADLogin.OrgID);
-  EditWarehouseID.text := IntToStr(ADLogin.WarehouseID );
-  EditStage.text       := IntToStr(ADLogin.stage);
-end;
-
-//=== Save Button ==============================================================
-procedure TForm1.BtnSaveClick(Sender: TObject);
-begin
-  SetLogin;
-end;
-
-//=== Send Request =============================================================
-procedure TForm1.BtnSendRequestClick(Sender: TObject);
+//=== Create BPartner Test =====================================================vb
+procedure TClient.BtnCreateBPClick(Sender: TObject);
 var
   arg0 : ModelCRUDRequest;
   response : StandardResponse;
@@ -123,17 +93,17 @@ begin
   // Set sending Data
   data0        := DataField.Create;
   data0.column := 'Name';
-  data0.val    := EditBPName.Text;
+  data0.val    := EditCreateBPName.Text;
   DataRow[0]   := data0;
 
   data1        := DataField.Create;
   data1.column := 'Value';
-  data1.val    := EditBPValue.Text;
+  data1.val    := EditCreateBPValue.Text;
   DataRow[1]   := data1;
 
   data2        := DataField.Create;
   data2.column := 'TaxID';
-  data2.val    := EditBPTaxID.Text;
+  data2.val    := EditCreateBPTaxID.Text;
   DataRow[2]   := data2;
   // Set Array of sending Data
   arg0.ModelCRUD.DataRow := dataRow;
@@ -157,69 +127,99 @@ begin
   }
   response := GetModelADService(true, EditURL.Text, HTTPRIO1).createData(arg0);
 
-  MemoResponse.Clear;
+  MemoCreateBPResponse.Clear;
   if (response.IsError) then
-    MemoResponse.Lines.Add('Error: ' + response.Error)
+    MemoCreateBPResponse.Lines.Add('Error: ' + response.Error)
   else
     for I := Low(response.outputFields) to High(response.outputFields) do begin
       output := response.outputFields[I];
-      MemoResponse.Lines.Add('Column: ' + output[I].column);
-      MemoResponse.Lines.Add('Value: '  + output[I].value );
-      MemoResponse.Lines.Add('Text: '   + output[I].Text  );
-      MemoResponse.Lines.Add('---------------------------');
+      MemoCreateBPResponse.Lines.Add('Column: ' + output[I].column);
+      MemoCreateBPResponse.Lines.Add('Value: '  + output[I].value );
+      MemoCreateBPResponse.Lines.Add('Text: '   + output[I].Text  );
+      MemoCreateBPResponse.Lines.Add('---------------------------');
     end;
+end;
 
+//=== Set Login (ADLogin) ======================================================
+procedure TClient.SetLogin();
+begin
+  ADLogin.user        := EditUser.text;
+  ADLogin.pass        := EditPass.text;
+  ADLogin.lang        := EditLang.text;
+  ADLogin.ClientID    := StrToInt(EditClientID.text);
+  ADLogin.RoleID      := StrToInt(EditRoleID.text);
+  ADLogin.OrgID       := StrToInt(EditOrgID.text);
+  ADLogin.WarehouseID := StrToInt(EditWarehouseID.text);
+  ADLogin.stage       := StrToInt(EditStage.text);
+end;
+//=== Cancel Button ============================================================
+procedure TClient.BtnCancelClick(Sender: TObject);
+begin
+  EditUser.text        := ADLogin.user;
+  EditPass.text        := ADLogin.pass;
+  EditLang.text        := ADLogin.lang;
+  EditClientID.text    := IntToStr(ADLogin.ClientID);
+  EditRoleID.text      := IntToStr(ADLogin.RoleID);
+  EditOrgID.text       := IntToStr(ADLogin.OrgID);
+  EditWarehouseID.text := IntToStr(ADLogin.WarehouseID );
+  EditStage.text       := IntToStr(ADLogin.stage);
+end;
+
+//=== Save Button ==============================================================
+procedure TClient.BtnSaveClick(Sender: TObject);
+begin
+  SetLogin;
 end;
 
 //=== Form Create ==============================================================
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TClient.FormCreate(Sender: TObject);
 begin
   ADLogin := ADLoginRequest.Create();
   SetLogin;
 end;
 
 //=== After Send XML ===========================================================
-procedure TForm1.HTTPRIO1AfterExecute(const MethodName: string;
+procedure TClient.HTTPRIO1AfterExecute(const MethodName: string;
   SOAPResponse: TStream);
 var
   Document: IXMLDocument;
 begin
   SOAPResponse.Position := 0;
-
+  // Create XML Doc
   Document := TXMLDocument.Create(nil);
   Document.Options := [];
-  Document.LoadFromStream(SOAPResponse);
-  Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text);
-  Document.Active := true;
-
+  Document.LoadFromStream(SOAPResponse); // Get Doc from Stream
+  Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text); // Format XML
+  Document.Active := true; // Active Doc
+  // Save XML
   Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
-        Copy(ExtractFileName(Application.ExeName), 1, Pos('.',ExtractFileName(Application.ExeName)) -1) + 'Test_Response.xml'));
-
+        MethodName + 'Test_Response.xml'));
+  // Go back to begin
   SOAPResponse.Position := 0;
 end;
 
 //=== Before Send XML ==========================================================
-procedure TForm1.HTTPRIO1BeforeExecute(const MethodName: string;
+procedure TClient.HTTPRIO1BeforeExecute(const MethodName: string;
   SOAPRequest: TStream);
 var
   Document: IXMLDocument;
 begin
   SOAPRequest.Position := 0;
-
+  // Create XML Doc
   Document := TXMLDocument.Create(nil);
   Document.Options := [];
-  Document.LoadFromStream(SOAPRequest);
-  Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text);
-  Document.Active := true;
-
+  Document.LoadFromStream(SOAPRequest); // Get Doc from Stream
+  Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text); // Format XML
+  Document.Active := true; // Active Doc
+  // Save XML
   Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
-        Copy(ExtractFileName(Application.ExeName), 1, Pos('.',ExtractFileName(Application.ExeName))-1) + 'Test_Request.xml'));
-
+        MethodName + 'Test_Request.xml'));
+  // Go back to begin
   SOAPRequest.Position := 0;
 end;
 
 //=== Menu Button ==============================================================
-procedure TForm1.ImageMenuClick(Sender: TObject);
+procedure TClient.ImageMenuClick(Sender: TObject);
 var imagePath : String;
 begin
   if PanelLogin.Left = 0 then
@@ -243,3 +243,5 @@ begin
   end;
 
 end.
+
+

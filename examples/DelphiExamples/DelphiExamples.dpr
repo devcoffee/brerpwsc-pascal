@@ -1,8 +1,8 @@
-program CreateBPartner;
+program DelphiExamples;
 
 uses
   Vcl.Forms,
-  uClient in 'uClient.pas' {Form1},
+  uClient in 'Forms\uClient.pas' {Client},
   BrERPwscPascal in '..\..\lib\BrERPwscPascal.pas';
 
 {$R *.res}
@@ -10,6 +10,6 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TClient, Client);
   Application.Run;
 end.
