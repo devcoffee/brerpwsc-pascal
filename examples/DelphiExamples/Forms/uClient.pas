@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Soap.InvokeRegistry, Soap.Rio,
   Soap.SOAPHTTPClient, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, BrERPwscPascal,
-  Vcl.ComCtrls;
+  Vcl.ComCtrls, Vcl.Imaging.jpeg;
 
 type
   TClient = class(TForm)
@@ -46,6 +46,13 @@ type
     HTTPRIO1: THTTPRIO;
     PageControl1: TPageControl;
     TabCreateBP: TTabSheet;
+    TabReadImage: TTabSheet;
+    EditReadImageID: TEdit;
+    MemoReadImage: TMemo;
+    btnReadImage: TButton;
+    LabelReadImageResponse: TLabel;
+    LabelReadImageID: TLabel;
+    ImageReadImage: TImage;
     procedure BtnCreateBPClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure SetLogin();
@@ -56,9 +63,11 @@ type
     procedure HTTPRIO1BeforeExecute(const MethodName: string;
       SOAPRequest: TStream);
     procedure ImageMenuClick(Sender: TObject);
+    procedure btnReadImageClick(Sender: TObject);
   private
     { Private declarations }
     ADLogin : ADLoginRequest;
+    arg0 : ModelCRUDRequest;
   public
     { Public declarations }
   end;
@@ -70,19 +79,66 @@ implementation
 
 {$R *.dfm}
 
-uses XMLIntf, XMLDoc;
+uses XMLIntf, XMLDoc, Soap.EncdDecd;
+
+//=== Function to Convert Image to Base64 ======================================
+function Base64FromBitmap(Bitmap: TBitmap): string;
+var
+  Input: TBytesStream;
+  Output: TStringStream;
+begin
+  Input := TBytesStream.Create;
+  try
+    Bitmap.SaveToStream(Input);
+    Input.Position := 0;
+    Output := TStringStream.Create('', TEncoding.ASCII);
+    try
+      Soap.EncdDecd.EncodeStream(Input, Output);
+      Result := Output.DataString;
+    finally
+      Output.Free;
+    end;
+  finally
+    Input.Free;
+  end;
+end;
+
+//=== Function to Convert Base64 to Image ======================================
+function PictureFromBase64(const base64: string): TPicture;
+var
+  Input: TStringStream;
+  Output: TBytesStream;
+begin
+  Input := TStringStream.Create(base64, TEncoding.ASCII);
+  try
+    Output := TBytesStream.Create;
+    try
+      Soap.EncdDecd.DecodeStream(Input, Output);
+      Output.Position := 0;
+      Result := TPicture.Create;
+      try
+        Result.LoadFromStream(Output);
+      except
+        Result.Free;
+        raise;
+      end;
+    finally
+      Output.Free;
+    end;
+  finally
+    Input.Free;
+  end;
+end;
 
 //=== Create BPartner Test =====================================================vb
 procedure TClient.BtnCreateBPClick(Sender: TObject);
 var
-  arg0 : ModelCRUDRequest;
   response : StandardResponse;
   data0, data1, data2 : DataField;
   dataRow : BrERPwscPascal.DataRow;
   I: Integer;
   output : outputFields;
-begin
-  arg0 := ModelCRUDRequest.Create;
+begin  arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
   arg0.ADLoginRequest := ADLogin;
 
@@ -140,6 +196,60 @@ begin
     end;
 end;
 
+//=== Read Image Test ==========================================================
+procedure TClient.btnReadImageClick(Sender: TObject);
+var
+  response : WindowTabData;
+  dataRow : BrERPwscPascal.DataRow;
+  I: Integer;
+  X: Integer;
+  Input  : TStringStream;
+  Output : TBytesStream;
+  fromBase : array of Byte;
+begin  arg0 := ModelCRUDRequest.Create;
+  // Set Login to Model CRUD Request
+  arg0.ADLoginRequest := ADLogin;
+
+  // Set CRUD Model
+  arg0.ModelCRUD.serviceType := 'ReadImageTest';
+  arg0.ModelCRUD.RecordID := StrToInt(EditReadImageID.Text);
+
+  { Send Request, can be:
+      GetModelADService().CallMethod
+      GetModelADService(UseWSDL, URL, HTTPRio).CallMethod
+          e.g. URL: 'http://teste.brerp.com.br'
+
+      CallMethod         Parameter                  Result
+      -----------------|---------------------------|-------------------
+      createUpdateData  (ModelCRUDRequest)	        StandardResponse
+      setDocAction      (ModelSetDocActionRequest)	StandardResponse
+      createData        (ModelCRUDRequest)	        StandardResponse
+      deleteData        (ModelCRUDRequest)	        StandardResponse
+      readData          (ModelCRUDRequest)	        WindowTabData
+      getList           (ModelGetListRequest)	      WindowTabData
+      runProcess        (ModelRunProcessRequest)	  RunProcessResponse
+      updateData        (ModelCRUDRequest)	        StandardResponse
+      queryData         (ModelCRUDRequest)	        WindowTabData
+  }
+  response := GetModelADService(true, EditURL.Text, HTTPRIO1).readData(arg0);
+
+  MemoReadImage.Clear;
+  if(response.Success) then begin
+    for X := Low(response.DataSet) to High(response.DataSet) do begin
+      dataRow := response.DataSet[X];
+      for I := Low(dataRow) to High(dataRow) do begin
+        MemoReadImage.Lines.Add('Column: ' + dataRow[I].column);
+        MemoReadImage.Lines.Add('----------------------------');
+        // Value to Image
+        ImageReadImage.Picture := PictureFromBase64(dataRow[I].val);
+      end;
+    end;
+  end else begin
+    MemoReadImage.Lines.Add('Error: '     + response.Error);
+    MemoReadImage.Lines.Add('ErrorInfo: ' + response.ErrorInfo);
+  end;
+end;
+
 //=== Set Login (ADLogin) ======================================================
 procedure TClient.SetLogin();
 begin
@@ -193,8 +303,8 @@ begin
   Document.Active := true; // Active Doc
   // Save XML
   Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
-        MethodName + 'Test_Response.xml'));
-  // Go back to begin
+        arg0.ModelCRUD.serviceType + '_Response.xml'));
+  // Go back to beginning of file
   SOAPResponse.Position := 0;
 end;
 
@@ -213,8 +323,8 @@ begin
   Document.Active := true; // Active Doc
   // Save XML
   Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
-        MethodName + 'Test_Request.xml'));
-  // Go back to begin
+        arg0.ModelCRUD.serviceType + '_Request.xml'));
+  // Go back to beginning of file
   SOAPRequest.Position := 0;
 end;
 
