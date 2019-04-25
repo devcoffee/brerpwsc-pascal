@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Soap.InvokeRegistry, Soap.Rio,
   Soap.SOAPHTTPClient, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, BrERPwscPascal,
-  Vcl.ComCtrls, Vcl.Imaging.jpeg;
+  Vcl.ComCtrls, Vcl.Imaging.jpeg, Vcl.ExtDlgs;
 
 type
   TClient = class(TForm)
@@ -53,6 +53,16 @@ type
     LabelReadImageResponse: TLabel;
     LabelReadImageID: TLabel;
     ImageReadImage: TImage;
+    TabSheet1: TTabSheet;
+    MemoCreateImage: TMemo;
+    btnCreateImage: TButton;
+    LabelCreateImageResponse: TLabel;
+    ImageCreateImage: TImage;
+    OpenPictureDialog1: TOpenPictureDialog;
+    EditCreateImageDesc: TEdit;
+    LabelCreateImageDesc: TLabel;
+    EditCreateImageName: TEdit;
+    LabelCreateImageName: TLabel;
     procedure BtnCreateBPClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure SetLogin();
@@ -64,6 +74,8 @@ type
       SOAPRequest: TStream);
     procedure ImageMenuClick(Sender: TObject);
     procedure btnReadImageClick(Sender: TObject);
+    procedure ImageCreateImageClick(Sender: TObject);
+    procedure btnCreateImageClick(Sender: TObject);
   private
     { Private declarations }
     ADLogin : ADLoginRequest;
@@ -82,14 +94,14 @@ implementation
 uses XMLIntf, XMLDoc, Soap.EncdDecd;
 
 //=== Function to Convert Image to Base64 ======================================
-function Base64FromBitmap(Bitmap: TBitmap): string;
+function Base64FromPicture(Picture: TPicture): string;
 var
   Input: TBytesStream;
   Output: TStringStream;
 begin
   Input := TBytesStream.Create;
   try
-    Bitmap.SaveToStream(Input);
+    Picture.SaveToStream(Input);
     Input.Position := 0;
     Output := TStringStream.Create('', TEncoding.ASCII);
     try
@@ -196,6 +208,72 @@ begin  arg0 := ModelCRUDRequest.Create;
     end;
 end;
 
+//=== Create Image Test ========================================================
+procedure TClient.btnCreateImageClick(Sender: TObject);
+var
+  response : StandardResponse;
+  data0, data1, data2 : DataField;
+  dataRow : BrERPwscPascal.DataRow;
+  I: Integer;
+  output : outputFields;
+begin  arg0 := ModelCRUDRequest.Create;
+  // Set Login to Model CRUD Request
+  arg0.ADLoginRequest := ADLogin;
+
+  // Set CRUD Model
+  arg0.ModelCRUD.serviceType := 'CreateImageTest';
+
+  SetLength(dataRow,3);
+  // Set sending Data
+  data0        := DataField.Create;
+  data0.column := 'Name';
+  data0.val    := EditCreateImageName.Text;
+  DataRow[0]   := data0;
+
+  data1        := DataField.Create;
+  data1.column := 'Description';
+  data1.val    := EditCreateImageDesc.Text;
+  DataRow[1]   := data1;
+
+  data2        := DataField.Create;
+  data2.column := 'BinaryData';
+  data2.val    := Base64FromPicture(ImageCreateImage.Picture);
+  DataRow[2]   := data2;
+  // Set Array of sending Data
+  arg0.ModelCRUD.DataRow := dataRow;
+
+  { Send Request, can be:
+      GetModelADService().CallMethod
+      GetModelADService(UseWSDL, URL, HTTPRio).CallMethod
+          e.g. URL: 'http://teste.brerp.com.br'
+
+      CallMethod         Parameter                  Result
+      -----------------|---------------------------|-------------------
+      createUpdateData  (ModelCRUDRequest)	        StandardResponse
+      setDocAction      (ModelSetDocActionRequest)	StandardResponse
+      createData        (ModelCRUDRequest)	        StandardResponse
+      deleteData        (ModelCRUDRequest)	        StandardResponse
+      readData          (ModelCRUDRequest)	        WindowTabData
+      getList           (ModelGetListRequest)	      WindowTabData
+      runProcess        (ModelRunProcessRequest)	  RunProcessResponse
+      updateData        (ModelCRUDRequest)	        StandardResponse
+      queryData         (ModelCRUDRequest)	        WindowTabData
+  }
+  response := GetModelADService(true, EditURL.Text, HTTPRIO1).createData(arg0);
+
+  MemoCreateImage.Clear;
+  if (response.IsError) then
+    MemoCreateImage.Lines.Add('Error: ' + response.Error)
+  else
+    for I := Low(response.outputFields) to High(response.outputFields) do begin
+      output := response.outputFields[I];
+      MemoCreateImage.Lines.Add('Column: ' + output[I].column);
+      MemoCreateImage.Lines.Add('Value: '  + output[I].value );
+      MemoCreateImage.Lines.Add('Text: '   + output[I].Text  );
+      MemoCreateImage.Lines.Add('---------------------------');
+    end;
+end;
+
 //=== Read Image Test ==========================================================
 procedure TClient.btnReadImageClick(Sender: TObject);
 var
@@ -203,9 +281,6 @@ var
   dataRow : BrERPwscPascal.DataRow;
   I: Integer;
   X: Integer;
-  Input  : TStringStream;
-  Output : TBytesStream;
-  fromBase : array of Byte;
 begin  arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
   arg0.ADLoginRequest := ADLogin;
@@ -328,30 +403,32 @@ begin
   SOAPRequest.Position := 0;
 end;
 
+//=== Select Image =============================================================
+procedure TClient.ImageCreateImageClick(Sender: TObject);
+begin
+  if OpenPictureDialog1.Execute then
+    ImageCreateImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+end;
+
 //=== Menu Button ==============================================================
 procedure TClient.ImageMenuClick(Sender: TObject);
 var imagePath : String;
 begin
-  if PanelLogin.Left = 0 then
-    begin // Close Menu
-      imagePath := ExtractFilePath(Application.ExeName) + '/../../../' + 'Resources/MenuOpen.png';
-      if (FileExists(imagePath)) then
-        ImageMenu.Picture.LoadFromFile(imagePath);
+  if PanelLogin.Left = 0 then begin // Close Menu
+    imagePath := ExtractFilePath(Application.ExeName) + '/../../../' + 'Resources/MenuOpen.png';
+    if (FileExists(imagePath)) then
+      ImageMenu.Picture.LoadFromFile(imagePath);
 
-      while(PanelLogin.Left > (-PanelLogin.Width)+40 ) do
-        PanelLogin.Left := PanelLogin.Left-5
-    end
-  else
-    begin // Open Menu
-      imagePath := ExtractFilePath(Application.ExeName) + '/../../../' + 'Resources/MenuClose.png';
-      if (FileExists(imagePath)) then
-        ImageMenu.Picture.LoadFromFile(imagePath);
+    while(PanelLogin.Left > (-PanelLogin.Width)+40 ) do
+      PanelLogin.Left := PanelLogin.Left-5;
+  end else begin // Open Menu
+    imagePath := ExtractFilePath(Application.ExeName) + '/../../../' + 'Resources/MenuClose.png';
+    if (FileExists(imagePath)) then
+      ImageMenu.Picture.LoadFromFile(imagePath);
 
-      while(PanelLogin.Left < 0) do
-        PanelLogin.Left := PanelLogin.Left+5;
-    end;
+    while(PanelLogin.Left < 0) do
+      PanelLogin.Left := PanelLogin.Left+5;
   end;
+end;
 
 end.
-
-
