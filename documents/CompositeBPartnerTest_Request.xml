@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<SOAP-ENV:Body>
+		<compositeInterface xmlns="http://idempiere.org/ADInterface/1_0">
+			<CompositeRequest>
+				<serviceType>CompositeBPartnerTest</serviceType>
+				<Operations><Operations/>
+				<ADLoginRequest xsi:type="ADLoginRequest">
+					<user>superuser @ brerp.com.br</user>
+					<pass>irm_brerp</pass>
+					<lang>pt_BR</lang>
+					<ClientID>1000000</ClientID>
+					<RoleID>1000000</RoleID>
+					<OrgID>5000003</OrgID>
+					<WarehouseID>5000007</WarehouseID>
+					<stage>9</stage>
+				</ADLoginRequest>
+			</CompositeRequest>
+		</compositeInterface>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

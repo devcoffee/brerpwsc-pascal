@@ -69,6 +69,18 @@ type
     LabelQueryBPResponse: TLabel;
     EditQueryBPQuery: TEdit;
     LabelQueryBPQuery: TLabel;
+    TabComposite: TTabSheet;
+    btnComposite: TButton;
+    MemoComposite: TMemo;
+    ImageComposite: TImage;
+    LabelCompositeResponse: TLabel;
+    EditCompositeValue: TEdit;
+    LabelCompositeValue: TLabel;
+    EditCompositeTax: TEdit;
+    LabelCompositeTax: TLabel;
+    LabelCompositeHelp: TLabel;
+    EditCompositeName: TEdit;
+    LabelCompositeName: TLabel;
     procedure BtnCreateBPClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure SetLogin();
@@ -81,6 +93,8 @@ type
     procedure ImageCreateImageClick(Sender: TObject);
     procedure btnCreateImageClick(Sender: TObject);
     procedure btnQueryBPClick(Sender: TObject);
+    procedure ImageCompositeClick(Sender: TObject);
+    procedure btnCompositeClick(Sender: TObject);
   private
     { Private declarations }
     ADLogin : ADLoginRequest;
@@ -147,7 +161,65 @@ begin
   end;
 end;
 
-//=== Create BPartner Test =====================================================vb
+//=== Composite Test ===========================================================
+procedure TClient.btnCompositeClick(Sender: TObject); 
+var
+  arg1 : CompositeRequest;
+  response : CompositeResponses;
+  operations : BrERPwscPascal.Operations;
+  operation0, operation1 : Operation;
+  modelCRUD : BrERPwscPascal.ModelCRUD;
+  
+  data0, data1, data2 : DataField;
+  dataRow : BrERPwscPascal.DataRow;
+  I: Integer;
+  output : outputFields;
+begin   
+  arg0 := ModelCRUDRequest.Create;// Just to show ServiceType in the name of XML
+  arg1 := CompositeRequest.Create;
+  // Set Login to Model CRUD Request
+  arg1.ADLoginRequest := ADLogin;
+
+  // Set CRUD Model
+  arg1.serviceType := 'CompositeBPartnerTest';
+  arg0.ModelCRUD.serviceType := 'CompositeBPartnerTest';// Just to show ServiceType in the name of XML  
+  
+  SetLength(dataRow,3);
+  // Set sending Data
+  data0        := DataField.Create;
+  data0.column := 'Name';
+  data0.val    := EditCreateBPName.Text;
+  DataRow[0]   := data0;
+
+  data1        := DataField.Create;
+  data1.column := 'Value';
+  data1.val    := EditCreateBPValue.Text;
+  DataRow[1]   := data1;
+
+  data2        := DataField.Create;
+  data2.column := 'TaxID';
+  data2.val    := EditCreateBPTaxID.Text;
+  DataRow[2]   := data2;
+  // Set Array of sending Data
+  modelCRUD := BrERPwscPascal.ModelCRUD.Create;
+  modelCRUD.DataRow := dataRow;
+
+  // Create First Operation
+  operation0 := Operation.Create;
+  operation0.TargetPort := 'createData';
+  operation0.ModelCRUD := modelCRUD;
+  modelCRUD.free;
+  
+  // Set Model to first Operation   
+  SetLength(operations,2);
+  operations[0] := operation0;
+
+
+  // Call CompositeRequest Method
+  response := GetModelADService(true, EditURL.Text, HTTPRIO1).compositeOperation(arg1);
+end;
+                            
+//=== Create BPartner Test =====================================================
 procedure TClient.BtnCreateBPClick(Sender: TObject);
 var
   response : StandardResponse;
@@ -155,7 +227,8 @@ var
   dataRow : BrERPwscPascal.DataRow;
   I: Integer;
   output : outputFields;
-begin  arg0 := ModelCRUDRequest.Create;
+begin  
+  arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
   arg0.ADLoginRequest := ADLogin;
 
@@ -473,9 +546,17 @@ begin
   SOAPRequest.Position := 0;
 end;
 
-//=== Select Image =============================================================
+//=== Select Image (Composite) =================================================
+procedure TClient.ImageCompositeClick(Sender: TObject);
+begin
+  if OpenPictureDialog1.Execute then
+    ImageComposite.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+end;
+             
+//=== Select Image (Create) ====================================================
 procedure TClient.ImageCreateImageClick(Sender: TObject);
-begin  if OpenPictureDialog1.Execute then
+begin 
+  if OpenPictureDialog1.Execute then
     ImageCreateImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
 end;
 

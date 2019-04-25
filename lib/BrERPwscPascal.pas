@@ -636,6 +636,49 @@ type
   end;
 
 
+
+  // ************************************************************************ //
+  // Composite Classes
+  // ************************************************************************ //
+  Operation = class(TRemotable)
+  private
+    FTargetPort: String;
+    FModelCRUD: ModelCRUD;
+  public
+    constructor Create; reintroduce; overload;
+  published
+    property TargetPort:     String           read FTargetPort      write FTargetPort;
+    property ModelCRUD:      ModelCRUD        read FModelCRUD       write FModelCRUD;
+  end;
+
+  Operations = Array of Operation;
+
+  CompositeRequest = class(TRemotable)
+  private
+    FserviceType: string;
+    FOperations: Operations;
+    FADLoginRequest: ADLoginRequest2;
+  public
+    constructor Create; reintroduce; overload;
+  published
+    property serviceType:    string          read FserviceType     write FserviceType;
+    property Operations:     Operations      read FOperations      write FOperations;
+    property ADLoginRequest: ADLoginRequest2 read FADLoginRequest  write FADLoginRequest;
+  end;
+
+
+
+  CompositeResponse = array of StandardResponse;
+
+
+  CompositeResponses = class(TRemotable)
+  private
+    FCompositeResponse: CompositeResponse;
+  published
+    property CompositeResponse : CompositeResponse read FCompositeResponse write FCompositeResponse;
+  end;
+
+
   // ************************************************************************ //
   // Namespace : http://idempiere.org/ADInterface/1_0
   // transport : http://schemas.xmlsoap.org/soap/http
@@ -657,6 +700,8 @@ type
     function  runProcess(const arg0: ModelRunProcessRequest): RunProcessResponse; stdcall;
     function  updateData(const arg0: ModelCRUDRequest): StandardResponse; stdcall;
     function  queryData(const arg0: ModelCRUDRequest): WindowTabData; stdcall;
+    // compositeOperation
+    function  compositeOperation(const arg0: CompositeRequest): CompositeResponses; stdcall;
   end;
 
 function GetModelADService(UseWSDL: Boolean=System.False; Addr: string=''; HTTPRIO: THTTPRIO = nil): ModelADService;
@@ -1255,6 +1300,22 @@ begin
   inherited Destroy;
 end;
 
+{ CompositeRequest }
+
+constructor CompositeRequest.Create;
+begin
+  inherited Create;
+  FADLoginRequest := ADLoginRequest2.Create();
+end;
+
+{ Operation }
+
+constructor Operation.Create;
+begin
+  inherited Create;
+  FModelCRUD := BrERPwscPascal.ModelCRUD.Create();
+end;
+
 initialization
   { ModelADService }
   InvRegistry.RegisterInterface(TypeInfo(ModelADService), 'http://idempiere.org/ADInterface/1_0', '');
@@ -1305,6 +1366,11 @@ initialization
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'queryData', 'return', '',
                                 '[Namespace="http://idempiere.org/ADInterface/1_0"]');
+  { ModelADService.compositeOperation }
+  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'compositeOperation', 'arg0', 'CompositeRequest',
+                                '[Namespace="http://idempiere.org/ADInterface/1_0"]');
+  InvRegistry.RegisterParamInfo(TypeInfo(ModelADService), 'compositeOperation', 'return', '',
+                                '[Namespace="http://idempiere.org/ADInterface/1_0"]');
   RemClassRegistry.RegisterXSClass(ModelCRUDRequest2, 'http://idempiere.org/ADInterface/1_0', 'ModelCRUDRequest2', 'ModelCRUDRequest');
   RemClassRegistry.RegisterXSClass(ModelCRUDRequest, 'http://idempiere.org/ADInterface/1_0', 'ModelCRUDRequest');
   RemClassRegistry.RegisterXSInfo(TypeInfo(LookupValues), 'http://idempiere.org/ADInterface/1_0', 'LookupValues');
@@ -1341,5 +1407,8 @@ initialization
   RemClassRegistry.RegisterXSClass(ModelSetDocAction, 'http://idempiere.org/ADInterface/1_0', 'ModelSetDocAction');
   RemClassRegistry.RegisterXSClass(ModelSetDocActionRequest2, 'http://idempiere.org/ADInterface/1_0', 'ModelSetDocActionRequest2', 'ModelSetDocActionRequest');
   RemClassRegistry.RegisterXSClass(ModelSetDocActionRequest, 'http://idempiere.org/ADInterface/1_0', 'ModelSetDocActionRequest');
+  // Composite
+  RemClassRegistry.RegisterXSClass(CompositeRequest, 'http://idempiere.org/ADInterface/1_0', 'CompositeRequest');
+  RemClassRegistry.RegisterXSClass(Operation, 'http://idempiere.org/ADInterface/1_0', 'Operation');
 
 end.
