@@ -3,10 +3,10 @@ unit uClient;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Soap.InvokeRegistry, Soap.Rio,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.NetEncoding,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Soap.InvokeRegistry, Soap.Rio,
   Soap.SOAPHTTPClient, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, BrERPwscPascal,
-  Vcl.ComCtrls, Vcl.Imaging.jpeg, Vcl.ExtDlgs;
+  Vcl.ComCtrls, Vcl.Imaging.jpeg, Vcl.ExtDlgs, Soap.EncdDecd;
 
 type
   TClient = class(TForm)
@@ -53,7 +53,7 @@ type
     LabelReadImageResponse: TLabel;
     LabelReadImageID: TLabel;
     ImageReadImage: TImage;
-    TabSheet1: TTabSheet;
+    TabCreateImage: TTabSheet;
     MemoCreateImage: TMemo;
     btnCreateImage: TButton;
     LabelCreateImageResponse: TLabel;
@@ -63,19 +63,24 @@ type
     LabelCreateImageDesc: TLabel;
     EditCreateImageName: TEdit;
     LabelCreateImageName: TLabel;
+    TabQueryBP: TTabSheet;
+    btnQueryBP: TButton;
+    MemoQueryBP: TMemo;
+    LabelQueryBPResponse: TLabel;
+    EditQueryBPQuery: TEdit;
+    LabelQueryBPQuery: TLabel;
     procedure BtnCreateBPClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure SetLogin();
     procedure BtnCancelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure HTTPRIO1AfterExecute(const MethodName: string;
-      SOAPResponse: TStream);
-    procedure HTTPRIO1BeforeExecute(const MethodName: string;
-      SOAPRequest: TStream);
+    procedure HTTPRIO1AfterExecute(const MethodName: string; SOAPResponse: TStream);
+    procedure HTTPRIO1BeforeExecute(const MethodName: string; SOAPRequest: TStream);
     procedure ImageMenuClick(Sender: TObject);
     procedure btnReadImageClick(Sender: TObject);
     procedure ImageCreateImageClick(Sender: TObject);
     procedure btnCreateImageClick(Sender: TObject);
+    procedure btnQueryBPClick(Sender: TObject);
   private
     { Private declarations }
     ADLogin : ADLoginRequest;
@@ -91,7 +96,7 @@ implementation
 
 {$R *.dfm}
 
-uses XMLIntf, XMLDoc, Soap.EncdDecd;
+uses XMLIntf, XMLDoc;
 
 //=== Function to Convert Image to Base64 ======================================
 function Base64FromPicture(Picture: TPicture): string;
@@ -274,6 +279,68 @@ begin  arg0 := ModelCRUDRequest.Create;
     end;
 end;
 
+//=== Query BPartner Test ======================================================
+procedure TClient.btnQueryBPClick(Sender: TObject);
+var
+  response : WindowTabData;
+  dataRow : BrERPwscPascal.DataRow; 
+  data0 : DataField;
+  I: Integer;
+  X: Integer;
+begin  
+  arg0 := ModelCRUDRequest.Create;
+  // Set Login to Model CRUD Request
+  arg0.ADLoginRequest := ADLogin;
+
+  // Set CRUD Model
+  arg0.ModelCRUD.serviceType := 'QueryBPartnerTest';
+  arg0.ModelCRUD.RecordID := StrToInt(EditReadImageID.Text);  
+
+  SetLength(dataRow,1);
+  // Set sending Data
+  data0        := DataField.Create;
+  data0.column := 'Value';
+  data0.val    := EditQueryBPQuery.Text;
+  DataRow[0]   := data0;
+
+  // Set Array of sending Data
+  arg0.ModelCRUD.DataRow := dataRow;
+
+  { Send Request, can be:
+      GetModelADService().CallMethod
+      GetModelADService(UseWSDL, URL, HTTPRio).CallMethod
+          e.g. URL: 'http://teste.brerp.com.br'
+
+      CallMethod         Parameter                  Result
+      -----------------|---------------------------|-------------------
+      createUpdateData  (ModelCRUDRequest)	        StandardResponse
+      setDocAction      (ModelSetDocActionRequest)	StandardResponse
+      createData        (ModelCRUDRequest)	        StandardResponse
+      deleteData        (ModelCRUDRequest)	        StandardResponse
+      readData          (ModelCRUDRequest)	        WindowTabData
+      getList           (ModelGetListRequest)	      WindowTabData
+      runProcess        (ModelRunProcessRequest)	  RunProcessResponse
+      updateData        (ModelCRUDRequest)	        StandardResponse
+      queryData         (ModelCRUDRequest)	        WindowTabData
+  }
+  response := GetModelADService(true, EditURL.Text, HTTPRIO1).queryData(arg0); 
+
+  MemoQueryBP.Clear;
+  if(response.Success) then begin
+    for X := Low(response.DataSet) to High(response.DataSet) do begin
+      dataRow := response.DataSet[X];
+      for I := Low(dataRow) to High(dataRow) do begin
+        MemoQueryBP.Lines.Add(dataRow[I].column + ': ' + dataRow[I].val);
+      end;                                                   
+      MemoQueryBP.Lines.Add('----------------------------');
+    end;
+  end else begin
+    MemoQueryBP.Lines.Add('Error: '     + response.Error);
+    MemoQueryBP.Lines.Add('ErrorInfo: ' + response.ErrorInfo);
+  end;
+
+end;
+
 //=== Read Image Test ==========================================================
 procedure TClient.btnReadImageClick(Sender: TObject);
 var
@@ -281,7 +348,8 @@ var
   dataRow : BrERPwscPascal.DataRow;
   I: Integer;
   X: Integer;
-begin  arg0 := ModelCRUDRequest.Create;
+begin  
+  arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
   arg0.ADLoginRequest := ADLogin;
 
@@ -314,10 +382,11 @@ begin  arg0 := ModelCRUDRequest.Create;
       dataRow := response.DataSet[X];
       for I := Low(dataRow) to High(dataRow) do begin
         MemoReadImage.Lines.Add('Column: ' + dataRow[I].column);
-        MemoReadImage.Lines.Add('----------------------------');
+        MemoReadImage.Lines.Add('Value : ' + Copy(dataRow[I].val, 0, 30) + '...');
         // Value to Image
         ImageReadImage.Picture := PictureFromBase64(dataRow[I].val);
-      end;
+      end;       
+      MemoReadImage.Lines.Add('----------------------------');
     end;
   end else begin
     MemoReadImage.Lines.Add('Error: '     + response.Error);
@@ -337,6 +406,7 @@ begin
   ADLogin.WarehouseID := StrToInt(EditWarehouseID.text);
   ADLogin.stage       := StrToInt(EditStage.text);
 end;
+
 //=== Cancel Button ============================================================
 procedure TClient.BtnCancelClick(Sender: TObject);
 begin
@@ -405,8 +475,7 @@ end;
 
 //=== Select Image =============================================================
 procedure TClient.ImageCreateImageClick(Sender: TObject);
-begin
-  if OpenPictureDialog1.Execute then
+begin  if OpenPictureDialog1.Execute then
     ImageCreateImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
 end;
 
@@ -430,5 +499,6 @@ begin
       PanelLogin.Left := PanelLogin.Left+5;
   end;
 end;
+
 
 end.
