@@ -376,7 +376,6 @@ object Client: TClient
     TabOrder = 1
     object TabCreateBP: TTabSheet
       Caption = 'Create BPartner'
-      ExplicitWidth = 358
       object LabelCreateBPName: TLabel
         Left = 45
         Top = 32
@@ -449,7 +448,6 @@ object Client: TClient
     object TabQueryBP: TTabSheet
       Caption = 'Query BPartner'
       ImageIndex = 3
-      ExplicitWidth = 358
       object LabelQueryBPResponse: TLabel
         Left = 45
         Top = 178
@@ -493,7 +491,6 @@ object Client: TClient
     object TabCreateImage: TTabSheet
       Caption = 'Create Image'
       ImageIndex = 2
-      ExplicitWidth = 358
       object LabelCreateImageResponse: TLabel
         Left = 45
         Top = 178
@@ -686,7 +683,6 @@ object Client: TClient
     object TabReadImage: TTabSheet
       Caption = 'Read Image'
       ImageIndex = 1
-      ExplicitWidth = 358
       object LabelReadImageResponse: TLabel
         Left = 45
         Top = 178
@@ -862,7 +858,6 @@ object Client: TClient
     object TabComposite: TTabSheet
       Caption = 'Composite BP'
       ImageIndex = 4
-      ExplicitWidth = 358
       object ImageComposite: TImage
         Left = 205
         Top = 35

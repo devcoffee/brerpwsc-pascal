@@ -1,8 +1,12 @@
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	<soap:Body>
-		<soap:Fault>
-			<faultcode>soap:Client</faultcode>
-			<faultstring>Message part {http://idempiere.org/ADInterface/1_0}compositeOperation was not recognized.  (Does it exist in service WSDL?)</faultstring>
-		</soap:Fault>
+		<ns1:compositeOperationResponse xmlns:ns1="http://idempiere.org/ADInterface/1_0">
+			<CompositeResponses xmlns="http://idempiere.org/ADInterface/1_0">
+				<CompositeResponse>
+					<StandardResponse RecordID="1521827"/>
+					<StandardResponse RecordID="5000039"/>
+				</CompositeResponse>
+			</CompositeResponses>
+		</ns1:compositeOperationResponse>
 	</soap:Body>
 </soap:Envelope>

@@ -5,13 +5,13 @@
 				<DataSet>
 					<DataRow>
 						<field column="C_BPartner_ID">
-							<val>1000026</val>
+							<val>5000038</val>
 						</field>
 						<field column="Value">
-							<val>1000023</val>
+							<val>5992168</val>
 						</field>
 						<field column="Name">
-							<val>Rodoviário So no Grão</val>
+							<val>Test BPartner</val>
 						</field>
 						<field column="Logo_ID">
 							<val xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>

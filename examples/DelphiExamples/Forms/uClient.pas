@@ -3,10 +3,11 @@ unit uClient;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.NetEncoding,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Soap.InvokeRegistry, Soap.Rio,
-  Soap.SOAPHTTPClient, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, BrERPwscPascal,
-  Vcl.ComCtrls, Vcl.Imaging.jpeg, Vcl.ExtDlgs, Soap.EncdDecd;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  System.NetEncoding, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.Imaging.pngimage, Vcl.ComCtrls, Vcl.Imaging.jpeg, Vcl.ExtDlgs, Soap.EncdDecd,
+  BrERPwscPascal;
 
 type
   TClient = class(TForm)
@@ -97,7 +98,7 @@ type
     procedure btnCompositeClick(Sender: TObject);
   private
     { Private declarations }
-    ADLogin : ADLoginRequest;
+    ADLogin : ADLoginRequest2;
     arg0 : ModelCRUDRequest;
   public
     { Public declarations }
@@ -162,61 +163,126 @@ begin
 end;
 
 //=== Composite Test ===========================================================
-procedure TClient.btnCompositeClick(Sender: TObject); 
+procedure TClient.btnCompositeClick(Sender: TObject);
 var
   arg1 : CompositeRequest;
   response : CompositeResponses;
-  operations : BrERPwscPascal.Operations;
-  operation0, operation1 : Operation;
-  modelCRUD : BrERPwscPascal.ModelCRUD;
+  operations : BrERPwscPascal.operations;
+  operation0, operation1 : operation;
   
-  data0, data1, data2 : DataField;
+  data0, data1, data2, data3 : DataField;
   dataRow : BrERPwscPascal.DataRow;
-  I: Integer;
+  I, X, J : Integer;
   output : outputFields;
-begin   
+
+  compositeResponse : BrERPwscPascal.CompositeResponse;
+  standardResponse : StandardResponse2;
+begin
+  // Random Value and TaxID
+  EditCompositeValue.Text := IntToStr(random(1000000)+5000000);
+  EditCompositeTax.Text   := EditCompositeValue.Text;
+
   arg0 := ModelCRUDRequest.Create;// Just to show ServiceType in the name of XML
   arg1 := CompositeRequest.Create;
   // Set Login to Model CRUD Request
   arg1.ADLoginRequest := ADLogin;
 
   // Set CRUD Model
+  arg0.ModelCRUD.serviceType := 'CompositeBPartnerTest';// Just to show ServiceType in the name of XML
   arg1.serviceType := 'CompositeBPartnerTest';
-  arg0.ModelCRUD.serviceType := 'CompositeBPartnerTest';// Just to show ServiceType in the name of XML  
-  
+
   SetLength(dataRow,3);
-  // Set sending Data
+  // Set sending FIRST Data
   data0        := DataField.Create;
   data0.column := 'Name';
-  data0.val    := EditCreateBPName.Text;
+  data0.val    := EditCompositeName.Text+'_Logo';
   DataRow[0]   := data0;
 
   data1        := DataField.Create;
-  data1.column := 'Value';
-  data1.val    := EditCreateBPValue.Text;
+  data1.column := 'Description';
+  data1.val    := EditCompositeValue.Text+'_Desc';
   DataRow[1]   := data1;
 
   data2        := DataField.Create;
-  data2.column := 'TaxID';
-  data2.val    := EditCreateBPTaxID.Text;
+  data2.column := 'BinaryData';
+  data2.val    := Base64FromPicture(ImageCreateImage.Picture);
   DataRow[2]   := data2;
-  // Set Array of sending Data
-  modelCRUD := BrERPwscPascal.ModelCRUD.Create;
-  modelCRUD.DataRow := dataRow;
 
   // Create First Operation
   operation0 := Operation.Create;
-  operation0.TargetPort := 'createData';
-  operation0.ModelCRUD := modelCRUD;
-  modelCRUD.free;
+  //operation0.TargetPort := BrERPwscComposite.TargetPort.createData;
+  operation0.ModelCRUD := ModelCRUD.Create;
+  operation0.ModelCRUD.DataRow := dataRow;
+  operation0.ModelCRUD.serviceType := 'CreateImageTest';
+
+  SetLength(dataRow,0);
+  SetLength(dataRow,4);
+  // Set sending SECOND Data
+    data0        := DataField.Create;
+    data0.column := 'Name';
+    data0.val    := EditCompositeName.Text;
+    DataRow[0]   := data0;
+
+    data1        := DataField.Create;
+    data1.column := 'Value';
+    data1.val    := EditCompositeValue.Text;
+    DataRow[1]   := data1;
+
+    data2        := DataField.Create;
+    data2.column := 'TaxID';
+    data2.val    := EditCompositeTax.Text;
+    DataRow[2]   := data2;
+
+    data3        := DataField.Create;
+    data3.column := 'Logo_ID';
+    data3.val    := '@AD_Image.AD_Image_ID';
+    DataRow[3]   := data3;
+
+    // Create Second Operation
+    operation1 := Operation.Create;
+    //operation1.TargetPort := BrERPwscComposite.TargetPort.createData;
+    operation1.ModelCRUD := ModelCRUD.Create;
+    operation1.modelCRUD.DataRow := dataRow;
+    operation1.modelCRUD.serviceType := 'CreateBPartnerTest';
   
-  // Set Model to first Operation   
+  // Set Model to first Operation
   SetLength(operations,2);
   operations[0] := operation0;
+  operations[0].preCommit := false;
+  operations[0].postCommit := false;
+
+  operations[1] := operation1;
+  operations[1].preCommit := false;
+  operations[1].postCommit := false;
+
+  arg1.operations := operations;
 
 
-  // Call CompositeRequest Method
-  response := GetModelADService(true, EditURL.Text, HTTPRIO1).compositeOperation(arg1);
+  { Call CompositeRequest Method
+    CompositeRequest, can be:
+      GetModelADService().compositeOperation
+      GetModelADService(UseWSDL, URL, HTTPRio).compositeOperation
+          e.g. URL: 'http://teste.brerp.com.br'
+  }
+  response := GetCompositeService(true, EditURL.Text, HTTPRIO1).compositeOperation(arg1);
+
+  MemoComposite.Clear;
+  for X := Low(response) to High(response) do begin
+    compositeResponse := response[X];
+    for J := Low(compositeResponse) to High(compositeResponse) do begin
+      standardResponse := compositeResponse[J];
+      if (standardResponse.IsError) then
+        MemoComposite.Lines.Add('Error: ' + standardResponse.Error)
+      else
+        for I := Low(standardResponse.outputFields) to High(standardResponse.outputFields) do begin
+          output := standardResponse.outputFields[I];
+          MemoComposite.Lines.Add('Column: ' + output[I].column);
+          MemoComposite.Lines.Add('Value: '  + output[I].value );
+          MemoComposite.Lines.Add('Text: '   + output[I].Text  );
+          MemoComposite.Lines.Add('---------------------------');
+        end;
+    end;
+  end;
 end;
                             
 //=== Create BPartner Test =====================================================
@@ -227,7 +293,12 @@ var
   dataRow : BrERPwscPascal.DataRow;
   I: Integer;
   output : outputFields;
-begin  
+begin
+  // Random Value and TaxID
+  EditCreateBPValue.Text := IntToStr(random(1000000)+5000000);
+  EditCreateBPTaxID.Text := EditCreateBPValue.Text;
+  EditQueryBPQuery.Text  := '%' + EditCreateBPValue.Text + '%';
+
   arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
   arg0.ADLoginRequest := ADLogin;
@@ -294,7 +365,8 @@ var
   dataRow : BrERPwscPascal.DataRow;
   I: Integer;
   output : outputFields;
-begin  arg0 := ModelCRUDRequest.Create;
+begin
+arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
   arg0.ADLoginRequest := ADLogin;
 
@@ -349,6 +421,7 @@ begin  arg0 := ModelCRUDRequest.Create;
       MemoCreateImage.Lines.Add('Value: '  + output[I].value );
       MemoCreateImage.Lines.Add('Text: '   + output[I].Text  );
       MemoCreateImage.Lines.Add('---------------------------');
+      EditReadImageID.Text := output[I].value;
     end;
 end;
 
@@ -356,7 +429,7 @@ end;
 procedure TClient.btnQueryBPClick(Sender: TObject);
 var
   response : WindowTabData;
-  dataRow : BrERPwscPascal.DataRow; 
+  dataRow : BrERPwscPascal.DataRow;
   data0 : DataField;
   I: Integer;
   X: Integer;
@@ -470,6 +543,7 @@ end;
 //=== Set Login (ADLogin) ======================================================
 procedure TClient.SetLogin();
 begin
+  // Model
   ADLogin.user        := EditUser.text;
   ADLogin.pass        := EditPass.text;
   ADLogin.lang        := EditLang.text;
@@ -580,6 +654,5 @@ begin
       PanelLogin.Left := PanelLogin.Left+5;
   end;
 end;
-
 
 end.
