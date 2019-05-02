@@ -128,7 +128,7 @@
             <Form>Client</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\lib\BrERPwscPascal.pas"/>
+        <DCCReference Include="..\lib\BrERPwscPascal.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

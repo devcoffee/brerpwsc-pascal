@@ -5,10 +5,10 @@
 				<DataSet>
 					<DataRow>
 						<field column="C_BPartner_ID">
-							<val>5000038</val>
+							<val>5000040</val>
 						</field>
 						<field column="Value">
-							<val>5992168</val>
+							<val>5550478</val>
 						</field>
 						<field column="Name">
 							<val>Test BPartner</val>

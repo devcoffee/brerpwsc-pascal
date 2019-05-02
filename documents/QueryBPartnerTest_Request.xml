@@ -6,11 +6,11 @@
 				<ModelCRUD>
 					<serviceType>QueryBPartnerTest</serviceType>
 					<TableName/>
-					<RecordID>5000009</RecordID>
+					<RecordID>1503520</RecordID>
 					<Action>Create</Action>
 					<DataRow>
 						<field column="Value">
-							<val>%5992168%</val>
+							<val>%5550478%</val>
 						</field>
 					</DataRow>
 				</ModelCRUD>

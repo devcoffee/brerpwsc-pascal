@@ -3,7 +3,7 @@ program DelphiExamples;
 uses
   Vcl.Forms,
   uClient in 'Forms\uClient.pas' {Client},
-  BrERPwscPascal in '..\..\lib\BrERPwscPascal.pas';
+  BrERPwscPascal in '..\lib\BrERPwscPascal.pas';
 
 {$R *.res}
 

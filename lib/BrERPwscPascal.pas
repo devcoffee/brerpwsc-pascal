@@ -36,7 +36,6 @@ type
   ADLoginRequest       = class;                 { "http://idempiere.org/ADInterface/1_0"[GblElm] }
   ADLoginRequest2      = class;                 { "http://idempiere.org/ADInterface/1_0"[GblCplx] }
   CompositeRequest     = class;                 { "http://idempiere.org/ADInterface/1_0"[GblElm] }
-  //CompositeRequest2    = class;                 { "http://idempiere.org/ADInterface/1_0"[GblCplx] }
   DataField            = class;                 { "http://idempiere.org/ADInterface/1_0"[GblCplx] }
   LookupValue          = class;                 { "http://idempiere.org/ADInterface/1_0"[GblCplx] }
   ModelCRUD            = class;                 { "http://idempiere.org/ADInterface/1_0"[GblCplx] }
@@ -820,6 +819,8 @@ begin
 end;
 
 
+{ ModelCRUDRequest2 }
+
 constructor ModelCRUDRequest2.Create;
 begin
   inherited Create;
@@ -833,6 +834,8 @@ begin
   System.SysUtils.FreeAndNil(FADLoginRequest);
   inherited Destroy;
 end;
+
+{ WindowTabData2 }
 
 procedure WindowTabData2.SetNumRows(Index: Integer; const AInteger: Integer);
 begin
@@ -944,6 +947,8 @@ begin
   Result := FStatusError_Specified;
 end;
 
+{ RunProcessResponse2 }
+
 destructor RunProcessResponse2.Destroy;
 begin
   System.SysUtils.FreeAndNil(FData);
@@ -983,6 +988,8 @@ begin
   Result := FReportFormat_Specified;
 end;
 
+{ LookupValue }
+
 procedure LookupValue.Setval(Index: Integer; const Astring: string);
 begin
   Fval := Astring;
@@ -1004,6 +1011,8 @@ function LookupValue.key_Specified(Index: Integer): boolean;
 begin
   Result := Fkey_Specified;
 end;
+
+{ DataField }
 
 destructor DataField.Destroy;
 var
@@ -1103,6 +1112,8 @@ begin
   Result := Flookup_Specified;
 end;
 
+{ ModelRunProcessRequest2 }
+
 destructor ModelRunProcessRequest2.Destroy;
 begin
   System.SysUtils.FreeAndNil(FModelRunProcess);
@@ -1110,12 +1121,16 @@ begin
   inherited Destroy;
 end;
 
+{ ModelGetListRequest2 }
+
 destructor ModelGetListRequest2.Destroy;
 begin
   System.SysUtils.FreeAndNil(FModelGetList);
   System.SysUtils.FreeAndNil(FADLoginRequest);
   inherited Destroy;
 end;
+
+{ ModelCRUD }
 
 destructor ModelCRUD.Destroy;
 var
@@ -1182,6 +1197,8 @@ begin
   Result := FDataRow_Specified;
 end;
 
+{ ModelRunProcess2 }
+
 destructor ModelRunProcess2.Destroy;
 var
   I: Integer;
@@ -1235,6 +1252,8 @@ function ModelRunProcess2.DocAction_Specified(Index: Integer): boolean;
 begin
   Result := FDocAction_Specified;
 end;
+
+{ StandardResponse2 }
 
 destructor StandardResponse2.Destroy;
 begin
@@ -1320,6 +1339,8 @@ begin
   Result := FWindowTabData_Specified;
 end;
 
+{ outputField }
+
 procedure outputField.Setcolumn(Index: Integer; const Astring: string);
 begin
   Fcolumn := Astring;
@@ -1352,6 +1373,8 @@ function outputField.Text_Specified(Index: Integer): boolean;
 begin
   Result := FText_Specified;
 end;
+
+{ ModelSetDocAction }
 
 procedure ModelSetDocAction.SetrecordIDVariable(Index: Integer; const Astring: string);
 begin
@@ -1540,9 +1563,8 @@ initialization
   RemClassRegistry.RegisterXSClass(ModelGetList, 'http://idempiere.org/ADInterface/1_0', 'ModelGetList');
   RemClassRegistry.RegisterXSClass(ModelGetListRequest2, 'http://idempiere.org/ADInterface/1_0', 'ModelGetListRequest2', 'ModelGetListRequest');
   RemClassRegistry.RegisterXSClass(ModelGetListRequest, 'http://idempiere.org/ADInterface/1_0', 'ModelGetListRequest');
-  //RemClassRegistry.RegisterXSInfo(TypeInfo(TargetPort), 'http://idempiere.org/ADInterface/1_0', 'TargetPort');
+  RemClassRegistry.RegisterXSInfo(TypeInfo(TargetPort), 'http://idempiere.org/ADInterface/1_0', 'TargetPort');
   RemClassRegistry.RegisterXSInfo(TypeInfo(CompositeResponse), 'http://idempiere.org/ADInterface/1_0', 'CompositeResponse');
-  //RemClassRegistry.RegisterXSInfo(TypeInfo(CompositeResponses2), 'http://idempiere.org/ADInterface/1_0', 'CompositeResponses2', 'CompositeResponses');
   RemClassRegistry.RegisterXSInfo(TypeInfo(CompositeResponses), 'http://idempiere.org/ADInterface/1_0', 'CompositeResponses');
   RemClassRegistry.RegisterXSInfo(TypeInfo(Action), 'http://idempiere.org/ADInterface/1_0', 'Action');
   RemClassRegistry.RegisterExternalPropName(TypeInfo(Action), 'Read_', 'Read');
@@ -1552,8 +1574,6 @@ initialization
   RemClassRegistry.RegisterExternalPropName(TypeInfo(ModelRunProcess2), 'ParamValues', '[ArrayItemName="field"]');
   RemClassRegistry.RegisterXSClass(ModelRunProcess, 'http://idempiere.org/ADInterface/1_0', 'ModelRunProcess');
   RemClassRegistry.RegisterXSInfo(TypeInfo(operations), 'http://idempiere.org/ADInterface/1_0', 'operations');
-  //RemClassRegistry.RegisterXSInfo(TypeInfo(Array_Of_operations), 'http://idempiere.org/ADInterface/1_0', 'Array_Of_operations');
-  //RemClassRegistry.RegisterXSClass(CompositeRequest2, 'http://idempiere.org/ADInterface/1_0', 'CompositeRequest2', 'CompositeRequest');
   RemClassRegistry.RegisterXSClass(CompositeRequest, 'http://idempiere.org/ADInterface/1_0', 'CompositeRequest');
   RemClassRegistry.RegisterXSClass(operation, 'http://idempiere.org/ADInterface/1_0', 'operation');
   RemClassRegistry.RegisterXSInfo(TypeInfo(outputFields), 'http://idempiere.org/ADInterface/1_0', 'outputFields');

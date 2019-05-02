@@ -3,8 +3,8 @@
 		<ns1:compositeOperationResponse xmlns:ns1="http://idempiere.org/ADInterface/1_0">
 			<CompositeResponses xmlns="http://idempiere.org/ADInterface/1_0">
 				<CompositeResponse>
-					<StandardResponse RecordID="1521827"/>
-					<StandardResponse RecordID="5000039"/>
+					<StandardResponse RecordID="1521832"/>
+					<StandardResponse RecordID="5000043"/>
 				</CompositeResponse>
 			</CompositeResponses>
 		</ns1:compositeOperationResponse>

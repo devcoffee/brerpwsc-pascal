@@ -1,7 +1,7 @@
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	<soap:Body>
 		<ns1:createDataResponse xmlns:ns1="http://idempiere.org/ADInterface/1_0">
-			<StandardResponse xmlns="http://idempiere.org/ADInterface/1_0" RecordID="5000038"/>
+			<StandardResponse xmlns="http://idempiere.org/ADInterface/1_0" RecordID="5000040"/>
 		</ns1:createDataResponse>
 	</soap:Body>
 </soap:Envelope>

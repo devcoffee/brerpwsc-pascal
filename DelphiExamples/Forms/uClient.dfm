@@ -372,7 +372,7 @@ object Client: TClient
     Top = 83
     Width = 409
     Height = 367
-    ActivePage = TabComposite
+    ActivePage = TabCreateBP
     TabOrder = 1
     object TabCreateBP: TTabSheet
       Caption = 'Create BPartner'
@@ -448,6 +448,10 @@ object Client: TClient
     object TabQueryBP: TTabSheet
       Caption = 'Query BPartner'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object LabelQueryBPResponse: TLabel
         Left = 45
         Top = 178
@@ -491,6 +495,10 @@ object Client: TClient
     object TabCreateImage: TTabSheet
       Caption = 'Create Image'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object LabelCreateImageResponse: TLabel
         Left = 45
         Top = 178
@@ -683,6 +691,10 @@ object Client: TClient
     object TabReadImage: TTabSheet
       Caption = 'Read Image'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object LabelReadImageResponse: TLabel
         Left = 45
         Top = 178
@@ -1609,7 +1621,7 @@ object Client: TClient
       Alignment = taCenter
       PasswordChar = '*'
       TabOrder = 1
-      Text = 'irm_brerp'
+      Text = 'cafe123'
     end
     object EditClientID: TEdit
       Left = 46
@@ -1690,7 +1702,7 @@ object Client: TClient
       Height = 19
       Alignment = taCenter
       TabOrder = 8
-      Text = 'http://dev13.devcoffee.com.br'
+      Text = 'http://teste.brerp.com.br'
     end
   end
   object HTTPRIO1: THTTPRIO

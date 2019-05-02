@@ -210,7 +210,7 @@ begin
 
   // Create First Operation
   operation0 := Operation.Create;
-  //operation0.TargetPort := BrERPwscComposite.TargetPort.createData;
+  operation0.TargetPort := TargetPort.createData;
   operation0.ModelCRUD := ModelCRUD.Create;
   operation0.ModelCRUD.DataRow := dataRow;
   operation0.ModelCRUD.serviceType := 'CreateImageTest';
@@ -240,7 +240,7 @@ begin
 
     // Create Second Operation
     operation1 := Operation.Create;
-    //operation1.TargetPort := BrERPwscComposite.TargetPort.createData;
+    operation1.TargetPort := TargetPort.createData;
     operation1.ModelCRUD := ModelCRUD.Create;
     operation1.modelCRUD.DataRow := dataRow;
     operation1.modelCRUD.serviceType := 'CreateBPartnerTest';
@@ -594,7 +594,7 @@ begin
   Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text); // Format XML
   Document.Active := true; // Active Doc
   // Save XML
-  Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
+  Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\' + 'documents\' +
         arg0.ModelCRUD.serviceType + '_Response.xml'));
   // Go back to beginning of file
   SOAPResponse.Position := 0;
@@ -614,7 +614,7 @@ begin
   Document.XML.Text := xmlDoc.FormatXMLData(Document.XML.Text); // Format XML
   Document.Active := true; // Active Doc
   // Save XML
-  Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\..\' + 'documents\' +
+  Document.SaveToFile(ExpandFileName(ExtractFilePath(Application.ExeName) + '..\..\..\' + 'documents\' +
         arg0.ModelCRUD.serviceType + '_Request.xml'));
   // Go back to beginning of file
   SOAPRequest.Position := 0;
@@ -639,14 +639,14 @@ procedure TClient.ImageMenuClick(Sender: TObject);
 var imagePath : String;
 begin
   if PanelLogin.Left = 0 then begin // Close Menu
-    imagePath := ExtractFilePath(Application.ExeName) + '/../../../' + 'Resources/MenuOpen.png';
+    imagePath := ExtractFilePath(Application.ExeName) + '/../../' + 'Resources/MenuOpen.png';
     if (FileExists(imagePath)) then
       ImageMenu.Picture.LoadFromFile(imagePath);
 
     while(PanelLogin.Left > (-PanelLogin.Width)+40 ) do
       PanelLogin.Left := PanelLogin.Left-5;
   end else begin // Open Menu
-    imagePath := ExtractFilePath(Application.ExeName) + '/../../../' + 'Resources/MenuClose.png';
+    imagePath := ExtractFilePath(Application.ExeName) + '/../../' + 'Resources/MenuClose.png';
     if (FileExists(imagePath)) then
       ImageMenu.Picture.LoadFromFile(imagePath);
 
