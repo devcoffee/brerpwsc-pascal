@@ -13,10 +13,10 @@
 							<val>Test BPartner</val>
 						</field>
 						<field column="Value">
-							<val>5550478</val>
+							<val>5926187</val>
 						</field>
 						<field column="TaxID">
-							<val>5550478</val>
+							<val>5926187</val>
 						</field>
 					</DataRow>
 				</ModelCRUD>

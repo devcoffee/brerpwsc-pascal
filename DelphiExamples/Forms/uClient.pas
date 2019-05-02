@@ -173,10 +173,10 @@ var
   data0, data1, data2, data3 : DataField;
   dataRow : BrERPwscPascal.DataRow;
   I, X, J : Integer;
-  output : outputFields;
 
   compositeResponse : BrERPwscPascal.CompositeResponse;
   standardResponse : StandardResponse2;
+  output : outputFields;
 begin
   // Random Value and TaxID
   EditCompositeValue.Text := IntToStr(random(1000000)+5000000);
@@ -245,7 +245,7 @@ begin
     operation1.modelCRUD.DataRow := dataRow;
     operation1.modelCRUD.serviceType := 'CreateBPartnerTest';
   
-  // Set Model to first Operation
+  // Add Operation
   SetLength(operations,2);
   operations[0] := operation0;
   operations[0].preCommit := false;
@@ -258,10 +258,10 @@ begin
   arg1.operations := operations;
 
 
-  { Call CompositeRequest Method
-    CompositeRequest, can be:
-      GetModelADService().compositeOperation
-      GetModelADService(UseWSDL, URL, HTTPRio).compositeOperation
+  { Call GetCompositeService Method
+    GetCompositeService, can be:
+      GetCompositeService().compositeOperation
+      GetCompositeService(UseWSDL, URL, HTTPRio).compositeOperation
           e.g. URL: 'http://teste.brerp.com.br'
   }
   response := GetCompositeService(true, EditURL.Text, HTTPRIO1).compositeOperation(arg1);
@@ -431,8 +431,7 @@ var
   response : WindowTabData;
   dataRow : BrERPwscPascal.DataRow;
   data0 : DataField;
-  I: Integer;
-  X: Integer;
+  I, X: Integer;
 begin  
   arg0 := ModelCRUDRequest.Create;
   // Set Login to Model CRUD Request
@@ -440,8 +439,7 @@ begin
 
   // Set CRUD Model
   arg0.ModelCRUD.serviceType := 'QueryBPartnerTest';
-  arg0.ModelCRUD.RecordID := StrToInt(EditReadImageID.Text);  
-
+  
   SetLength(dataRow,1);
   // Set sending Data
   data0        := DataField.Create;

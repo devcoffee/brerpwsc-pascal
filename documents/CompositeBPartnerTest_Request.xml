@@ -17,7 +17,7 @@
 									<val>Test Composite BP_Logo</val>
 								</field>
 								<field column="Description">
-									<val>5439918_Desc</val>
+									<val>5294419_Desc</val>
 								</field>
 								<field column="BinaryData">
 									<val>/9j/4AAQSkZJRgABAQEAYABgAAD/4QBmRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUA
@@ -106,10 +106,10 @@ X9vP7X2mQ6p8EZLqVf31ncQTREdmY7D+GHP6UAfJNFFFAH//2Q==</val>
 									<val>Test Composite BP</val>
 								</field>
 								<field column="Value">
-									<val>5439918</val>
+									<val>5294419</val>
 								</field>
 								<field column="TaxID">
-									<val>5439918</val>
+									<val>5294419</val>
 								</field>
 								<field column="Logo_ID">
 									<val>@AD_Image.AD_Image_ID</val>

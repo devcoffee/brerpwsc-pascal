@@ -4,6 +4,7 @@
 // WSDL     : http://teste.brerp.com.br/ADInterface/services/ModelADService?wsdl
 //  >Import : http://teste.brerp.com.br/ADInterface/services/ModelADService?wsdl>0
 // Version  : 1.0
+// Author   : Igor Martins (igor.martins@devcoffee.com.br)
 // (15/04/2019 16:18:19 - - $Rev: 93209 $)
 // ************************************************************************ //
 

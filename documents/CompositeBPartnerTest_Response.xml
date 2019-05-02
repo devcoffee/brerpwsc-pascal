@@ -3,8 +3,16 @@
 		<ns1:compositeOperationResponse xmlns:ns1="http://idempiere.org/ADInterface/1_0">
 			<CompositeResponses xmlns="http://idempiere.org/ADInterface/1_0">
 				<CompositeResponse>
-					<StandardResponse RecordID="1521832"/>
-					<StandardResponse RecordID="5000043"/>
+					<StandardResponse RecordID="1521855">
+						<outputFields>
+							<outputField column="AD_Image_ID" value="1521855"/>
+						</outputFields>
+					</StandardResponse>
+					<StandardResponse RecordID="5000052">
+						<outputFields>
+							<outputField column="C_BPartner_ID" value="5000052"/>
+						</outputFields>
+					</StandardResponse>
 				</CompositeResponse>
 			</CompositeResponses>
 		</ns1:compositeOperationResponse>
