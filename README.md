@@ -29,7 +29,7 @@ O repositório é composto pelas pastas:
      * Consultar um Parceiro de Negócios utilizando o campo "Chave de Busca"
      * Criar uma Imagem do Sistema
      * Retornar uma Imagem do Sistema
-     * Criar uma Imagem e um Parceiro e vincular a Imagem à Logo do Parceiro
+     * Criar um Parceiro de Negócios com Imagem de Logo
  * **documents**
    * Contem todos os XML utilizados pelo projeto exemplo, tanto a **Requisição como a Resposta**.
  * **lib**
