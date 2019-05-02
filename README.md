@@ -43,12 +43,15 @@ A instalação da biblioteca é simples, basta fazer o Download do Arquivo **BrE
 
 ![Install2](documents/Image/Install2.png)
 
+Também é possivel baixar o código atraves das Release 
+[https://github.com/devcoffee/brerpwsc-pascal/releases](https://github.com/devcoffee/brerpwsc-pascal/releases)
+
+
 Mover o arquivo para a pasta do seu projeto e Adicionar:
 
 ![AddToProject1](documents/Image/AddToProject1.png)
 
 ![AddToProject2](documents/Image/AddToProject2.png)
-
 **Lembre-se de Adicionar a biblioteca nas suas "Uses"**
 
 ![AddToProject3](documents/Image/AddToProject3.png)
