@@ -13,7 +13,7 @@ Exemplos do que podem ser feito com uma requisição:
 
 ## Compatibilidade
 
-A biblioteca BrERPwscPascal foi criada atraves do RAD Studio 10.3 Rio, mas o requerimento minimo para a lib são os pacotes:
+A biblioteca BrERPwscPascal foi criada através do RAD Studio 10.3 Rio, mas o requerimento mínimo para a lib são os pacotes:
  * Soap.InvokeRegistry
  * Soap.SOAPHTTPClient
  * Soap.XSBuiltIns
@@ -24,7 +24,7 @@ A biblioteca BrERPwscPascal foi criada atraves do RAD Studio 10.3 Rio, mas o req
 
 O repositório é composto pelas pastas:
  * ***DelphiExamples***
-   * Contém um projeto em Delphi com os **exemplos de requisições** basicas:
+   * Contém um projeto em Delphi com os **exemplos de requisições** básicas:
      * Criar um Parceiro de Negócios
      * Consultar um Parceiro de Negócios utilizando o campo "Chave de Busca"
      * Criar uma Imagem do Sistema
@@ -43,7 +43,7 @@ A instalação da biblioteca é simples, basta fazer o Download do Arquivo **BrE
 
 ![Install2](documents/Image/Install2.png)
 
-Também é possivel baixar o código atraves das Release 
+Também é possível baixar o código através das Release 
 [https://github.com/devcoffee/brerpwsc-pascal/releases](https://github.com/devcoffee/brerpwsc-pascal/releases)
 
 
@@ -58,7 +58,7 @@ Mover o arquivo para a pasta do seu projeto e Adicionar:
 
 ## Exemplo Prático - Criando um Parceiro de Negócios com Imagem de Logo
 
-Antes de fazer qualquer requisição, é necessário criar uma configuração basíca do **BrERP**, para isso acesse a janela "**Segurança de Serviços Web**". Neste exemplo usaremos dois tipos de requisição:
+Antes de fazer qualquer requisição, é necessário criar uma configuração básica do **BrERP**, para isso acesse a janela "**Segurança de Serviços Web**". Neste exemplo usaremos dois tipos de requisição:
  * Model Oriented Web Services:
    * Criar Parceiro
    * Criar Imagem
@@ -70,7 +70,7 @@ Vamos iniciar pelas requisições de Modelo:
 
  1. Escolha um Nome e uma Chave de Busca que facilite a sua busca pela Requisição.
  1. O Tipo do Serviço, no caso usaremos o **Model Oriented Web Services**
- 1. Dentre todos os processos existente, usatemos nesse exemplo o **Model Oriented Web Services_Create Data**, pois criaremos um Parceiro de Negocios.
+ 1. Dentre todos os processos existente, usaremos nesse exemplo o **Model Oriented Web Services_Create Data**, pois criaremos um Parceiro de Negócios.
  1. Tabela usada na Requisição que no nosso exemplo será a **C_BPartner**
  1. Aqui serão adicionados os campos que a requisição aceitará, especificamente precisaremos dos campos:
      * Name_Nome 
@@ -84,7 +84,7 @@ Faremos o mesmo para as Imagens
 
 ![ConfigBrERP2](documents/Image/ConfigBrERP2.png)
 
-Após isso, necessitamos configurar a requisição do tipo Composite, que nada mais nada menos, é responsável por agrupar varias requisições do tipo Model e envia-las todas de uma vez.
+Após isso, necessitamos configurar a requisição do tipo Composite, que nada mais nada menos, é responsável por agrupar varias requisições do tipo Model e enviá-las todas de uma vez.
 
 ![ConfigBrERP3](documents/Image/ConfigBrERP3.png)
 
@@ -103,14 +103,14 @@ uses
   BrERPwscPascal;
 //=== Composite Test ===========================================================
 procedure TClient.btnCompositeClick(Sender: TObject);
-var // Variaveis de envio
+var // Variáveis de envio
   arg1 : CompositeRequest;
   response : CompositeResponses;
   operations : BrERPwscPascal.operations;
   operation0, operation1 : operation;
   data0, data1, data2, data3 : DataField;
   dataRow : BrERPwscPascal.DataRow;
-  // Variaveis de Retorno
+  // Variáveis de Retorno
   compositeResponse : BrERPwscPascal.CompositeResponse;
   standardResponse : StandardResponse2;
   output : outputFields;
@@ -195,14 +195,14 @@ begin
 
 
   { Metodo GetCompositeRequest, responsável por realizar a requisição.
-    O metodo pode ser chamado de duas maneiras:
-      * Sem parametros
+    O método pode ser chamado de duas maneiras:
+      * Sem parâmetros
         GetCompositeService().compositeOperation
-            Desta forma o metodo utilizará a URL padrão: 'http://teste.brerp.com.br'
+            Desta forma o método utilizará a URL padrão: 'http://teste.brerp.com.br'
 
       * Com argumentos
         GetCompositeService(UseWSDL, URL, HTTPRio).compositeOperation
-            Pode-se assim escolher a URL da requisição e até mesmo obter o XML, utilizando os parametros HTTPRIO1BeforeExecute e HTTPRIO1AfterExecute do HTTPRio fornecido.
+            Pode-se assim escolher a URL da requisição e até mesmo obter o XML, utilizando os parâmetros HTTPRIO1BeforeExecute e HTTPRIO1AfterExecute do HTTPRio fornecido.
   }
   response := GetCompositeService(true, EditURL.Text, HTTPRIO1).compositeOperation(arg1);
 
@@ -241,7 +241,7 @@ Após isso, acesse a aba **Composite BP** e clique em "Send Request":
 
 ## Requisições Simples
 
-Para realizar uma requisição simples, poucas auterações no código são necessárias, como por exemplo, as requisições não precisam ser separadas por operação:
+Para realizar uma requisição simples, poucas alterações no código são necessárias, como por exemplo, as requisições não precisam ser separadas por operação:
 
 ``` Delphi
 uses
@@ -272,20 +272,20 @@ begin
   arg0.ModelCRUD.DataRow := dataRow;
 
   { Requisição GetModelADService
-      GetModelADService().Metodo - Sem Parametros URL: 'http://teste.brerp.com.br'
+      GetModelADService().Metodo - Sem Parâmetros URL: 'http://teste.brerp.com.br'
       GetModelADService(UseWSDL, URL, HTTPRio).Metodo
 
-      Na Requisição simples existem varios tipos de serviços, nos quais você deve configurar de acordo com o tipo da requisição:
+      Na Requisição simples existem vários tipos de serviços, nos quais você deve configurar de acordo com o tipo da requisição:
 
-      Metodo            Paramatro                   Tipo do Retorno
+      Metodo            Paramêtro                   Tipo do Retorno
       -----------------|---------------------------|-------------------
       createUpdateData  (ModelCRUDRequest)	        StandardResponse
       setDocAction      (ModelSetDocActionRequest)	StandardResponse
       createData        (ModelCRUDRequest)	        StandardResponse
       deleteData        (ModelCRUDRequest)	        StandardResponse
       readData          (ModelCRUDRequest)	        WindowTabData
-      getList           (ModelGetListRequest)           WindowTabData
-      runProcess        (ModelRunProcessRequest)	RunProcessResponse
+      getList           (ModelGetListRequest)       WindowTabData
+      runProcess        (ModelRunProcessRequest)	  RunProcessResponse
       updateData        (ModelCRUDRequest)	        StandardResponse
       queryData         (ModelCRUDRequest)	        WindowTabData
   }
