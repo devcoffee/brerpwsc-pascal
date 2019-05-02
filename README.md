@@ -12,7 +12,7 @@ Exemplos do que podem ser feito com uma requisição:
 * Executar processos. 
 
 ## Compatibilidade
----
+
 A biblioteca BrERPwscPascal foi criada atraves do RAD Studio 10.3 Rio, mas o requerimento minimo para a lib são os pacotes:
  * Soap.InvokeRegistry
  * Soap.SOAPHTTPClient
@@ -21,7 +21,7 @@ A biblioteca BrERPwscPascal foi criada atraves do RAD Studio 10.3 Rio, mas o req
  * System.Types
 
 ## Repositório
----
+
 O repositório é composto pelas pastas:
  * ***DelphiExamples***
    * Contém um projeto em Delphi com os **exemplos de requisições** basicas:
@@ -36,7 +36,7 @@ O repositório é composto pelas pastas:
    * Contém a biblioteca **BrWRPescPascal.pas** que será adicionada ao seu projeto, também é o código fonte.
 
 ## Instalação
----
+
 A instalação da biblioteca é simples, basta fazer o Download do Arquivo **BrERPwscPascal.pas** dentro da pasta **lib**:
 
 ![Install1](documents/Image/Install1.png)
@@ -54,7 +54,7 @@ Mover o arquivo para a pasta do seu projeto e Adicionar:
 ![AddToProject3](documents/Image/AddToProject3.png)
 
 ## Exemplo Prático - Criando um Parceiro de Negócios com Imagem de Logo
----
+
 Antes de fazer qualquer requisição, é necessário criar uma configuração basíca do **BrERP**, para isso acesse a janela "**Segurança de Serviços Web**". Neste exemplo usaremos dois tipos de requisição:
  * Model Oriented Web Services:
    * Criar Parceiro
@@ -233,12 +233,11 @@ Após isso, acesse a aba **Composite BP** e clique em "Send Request":
 ![CompositeBPartnerTest1](documents/Image/CompositeBPartnerTest1.png)
 
 ## Resultado da Requisição:
----
 
 ![CompositeBPartnerTest2](documents/Image/CompositeBPartnerTest2.png)
 
 ## Requisições Simples
----
+
 Para realizar uma requisição simples, poucas auterações no código são necessárias, como por exemplo, as requisições não precisam ser separadas por operação:
 
 ``` Delphi
