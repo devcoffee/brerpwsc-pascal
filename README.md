@@ -23,7 +23,7 @@ A biblioteca BrERPwscPascal foi criada através do RAD Studio 10.3 Rio, mas o re
 ## Repositório
 
 O repositório é composto pelas pastas:
- * ***DelphiExamples***
+ * **DelphiExamples**
    * Contém um projeto em Delphi com os **exemplos de requisições** básicas:
      * Criar um Parceiro de Negócios
      * Consultar um Parceiro de Negócios utilizando o campo "Chave de Busca"
@@ -33,7 +33,7 @@ O repositório é composto pelas pastas:
  * **documents**
    * Contem todos os XML utilizados pelo projeto exemplo, tanto a **Requisição como a Resposta**.
  * **lib**
-   * Contém a biblioteca **BrWRPescPascal.pas** que será adicionada ao seu projeto, também é o código fonte.
+   * Contém a biblioteca **BrERPwscPascal.pas** que será adicionada ao seu projeto, também é o código fonte.
 
 ## Instalação
 
